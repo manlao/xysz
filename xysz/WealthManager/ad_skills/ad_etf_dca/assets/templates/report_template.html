@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }} - ETF定投分析报告</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  :root {
+    --bg: #ffffff; --card-bg: #f8f9fa; --border: #e0e0e0;
+    --text: #333333; --text-muted: #666666; --text-light: #999999;
+    --accent: #1a73e8; --red: #d32f2f; --green: #2e7d32;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08); --radius: 8px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: var(--text); line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  .header { background: linear-gradient(135deg, #1a237e, #3949ab); color: #fff; padding: 32px 24px; border-radius: var(--radius); margin-bottom: 24px; box-shadow: var(--shadow); }
+  .header h1 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+  .header .subtitle { font-size: 14px; opacity: 0.85; }
+  .header .meta { margin-top: 12px; font-size: 13px; opacity: 0.75; display: flex; gap: 16px; flex-wrap: wrap; }
+  .indicator-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .card .label { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+  .card .value { font-size: 22px; font-weight: 700; }
+  .card .sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+  .card.red .value { color: var(--red); } .card.green .value { color: var(--green); }
+  .section { background: var(--bg); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .section h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+  .chart-container { width: 100%; height: 420px; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .data-table th { background: #e3f2fd; color: var(--text); font-weight: 600; padding: 10px 12px; text-align: right; border-bottom: 2px solid var(--border); }
+  .data-table th:first-child { text-align: left; }
+  .data-table td { padding: 8px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+  .data-table td:first-child { text-align: left; }
+  .data-table tr:hover { background: #f5f5f5; }
+  .risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .risk-item { background: var(--card-bg); border-radius: var(--radius); padding: 16px; text-align: center; border: 1px solid var(--border); }
+  .risk-item .risk-value { font-size: 20px; font-weight: 700; }
+  .risk-item .risk-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .answer-box { background: #e8f5e9; border: 2px solid #66bb6a; border-radius: var(--radius); padding: 24px; margin-bottom: 24px; text-align: center; }
+  .answer-box .answer-value { font-size: 28px; font-weight: 700; color: #2e7d32; }
+  .answer-box .answer-desc { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
+  .disclaimer { text-align: center; font-size: 12px; color: var(--text-light); padding: 20px; margin-top: 24px; border-top: 1px solid var(--border); }
+  @media print { body { background: #fff; } .container { max-width: 100%; } .chart-container { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>{{ title }}</h1>
+    {% if not target_answer %}
+    <div class="meta">
+      <span>投入本金: ¥{{ "{:,.0f}".format(total_principal) }}</span>
+      <span>定投期数: {{ period_count }} 期</span>
+      <span>期末资产: ¥{{ "{:,.0f}".format(total_asset) }}</span>
+      <span>定投时间: {{ date_range }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Target Goal + Answer Box (target modes) -->
+  {% if target_answer and params %}
+  <div style="display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+    <div class="section" style="flex:1; min-width:280px; padding:16px 24px;">
+      <h2>定投条件</h2>
+      <div style="font-size:14px; line-height:2;">
+        {% for key, val in params.items() %}
+        <div><strong style="color:var(--text-muted);">{{ key }}：</strong>{{ val }}</div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="answer-box" style="flex:1; min-width:280px; text-align:center;">
+      <h2>{{ target_answer.title }}</h2>
+      <div class="answer-value" style="font-size:26px; margin-top:8px;">{{ target_answer.value }}</div>
+      <div class="answer-desc">{{ target_answer.desc }}</div>
+    </div>
+  </div>
+  {% elif target_answer %}
+  <div class="answer-box">
+    <h2>{{ target_answer.title }}</h2>
+    <div class="answer-value">{{ target_answer.value }}</div>
+    <div class="answer-desc">{{ target_answer.desc }}</div>
+  </div>
+  {% elif params %}
+  <div class="section" style="padding:16px 24px; margin-bottom:16px;">
+    <h2>定投条件</h2>
+    <div style="font-size:14px; line-height:2;">
+      {% for key, val in params.items() %}
+      <div><strong style="color:var(--text-muted);">{{ key }}：</strong>{{ val }}</div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Indicator Cards -->
+  <div class="indicator-cards">
+    <div class="card">
+      <div class="label">期末总资产</div>
+      <div class="value">¥{{ "{:,.0f}".format(indicator_cards.total_asset) }}</div>
+    </div>
+    <div class="card">
+      <div class="label">总投入本金</div>
+      <div class="value">¥{{ "{:,.0f}".format(indicator_cards.total_principal) }}</div>
+    </div>
+    <div class="card {{ 'green' if indicator_cards.total_return >= 0 else 'red' }}">
+      <div class="label">累计收益</div>
+      <div class="value">{{ '+' if indicator_cards.total_return >= 0 else '' }}{{ "{:,.0f}".format(indicator_cards.total_return) }}</div>
+      <div class="sub">收益率 {{ '+' if indicator_cards.total_return_pct >= 0 else '' }}{{ "%.2f"|format(indicator_cards.total_return_pct) }}%</div>
+    </div>
+    <div class="card">
+      <div class="label">真实年化 ({{ indicator_cards.rate_type }})</div>
+      <div class="value">{{ "%.2f"|format(indicator_cards.rate_pct) }}%</div>
+    </div>
+  </div>
+
+  <!-- Asset Curve (all modes) -->
+  {% if asset_curve and asset_curve.dates %}
+  <div class="section">
+    <h2>资产走势：市值 vs 投入本金</h2>
+    <div class="chart-container" id="asset-chart"></div>
+  </div>
+  {% endif %}
+
+  <!-- Return Curve (backtest only) -->
+  {% if chart_data %}
+  <div class="section">
+    <h2>收益率曲线：定投 vs 买入持有</h2>
+    <div class="chart-container" id="return-chart"></div>
+  </div>
+  {% endif %}
+
+  <!-- Scenario Comparison (forward only) -->
+  {% if scenario_data %}
+  <div class="section">
+    <h2>多情景对比</h2>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">同一方案在不同预期年化下的期末资产对比</p>
+    <div class="chart-container" id="scenario-chart"></div>
+  </div>
+  {% endif %}
+
+  <!-- Yearly Detail (forward + backtest) -->
+  {% if yearly_summary %}
+  <div class="section">
+    <h2>逐年明细</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>年份</th>
+          <th>当年投入</th>
+          <th>当年佣金</th>
+          <th>年末份额</th>
+          <th>年末资产</th>
+          {% if yearly_summary[0].get('year_return') is not none %}
+          <th>当年收益</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in yearly_summary %}
+        <tr>
+          <td>{{ row.year if row.year is defined else row.get('date', '--') }}</td>
+          <td>¥{{ "{:,.0f}".format(row.amount) }}</td>
+          <td>¥{{ "{:,.0f}".format(row.commission) }}</td>
+          <td>{{ "{:,.0f}".format(row.end_shares) }}</td>
+          <td>¥{{ "{:,.0f}".format(row.end_asset) }}</td>
+          {% if row.get('year_return') is not none %}
+          <td>¥{{ "{:,.0f}".format(row.get('year_return', 0)) }}</td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- Risk Metrics (backtest only) -->
+  {% if risk_data %}
+  <div class="section">
+    <h2>风险指标</h2>
+    <div class="risk-grid">
+      <div class="risk-item">
+        <div class="risk-value" style="color:var(--red);">{{ "%.2f"|format(risk_data.max_drawdown_pct) }}%</div>
+        <div class="risk-label">最大回撤</div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-value">{{ "%.2f"|format(risk_data.annualized_volatility * 100) }}%</div>
+        <div class="risk-label">年化波动率</div>
+      </div>
+      {% if risk_data.sharpe is not none %}
+      <div class="risk-item">
+        <div class="risk-value">{{ "%.2f"|format(risk_data.sharpe) }}</div>
+        <div class="risk-label">夏普比率</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Method -->
+  <div class="section">
+    <h2>计算方法说明</h2>
+    <p style="font-size:13px; color:var(--text-muted); line-height:2;">
+      <strong>价格口径：</strong>前复权收盘价（红利再投资全收益口径）<br>
+      <strong>佣金：</strong>逐笔 max(金额 × 费率, 5元)，默认费率万3、单笔最低5元<br>
+      <strong>份额规则：</strong>每期向下取整到 100 份（1手），场内最小交易单位<br>
+      <strong>真实年化 ({{ indicator_cards.rate_type }})：</strong>Σ C<sub>i</sub> / (1+r)<sup>(d<sub>i</sub>-d<sub>0</sub>)/365.25</sup> = 0，牛顿迭代法求解，资金加权计算<br>
+      <strong>最大回撤：</strong>基于定投累计收益率曲线，max(1 - 当前净值/历史峰值)<br>
+      <strong>年化波动率：</strong>日收益率标准差 × √252<br>
+      <strong>ETF基准：</strong>同期买入持有策略的累计收益率，用于对比定投是否跑赢市场
+    </p>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    <p>计算结果基于历史数据（前复权价格，红利再投资全收益口径），仅供参考，不构成投资建议。</p>
+    <p>过往业绩不代表未来收益。市场有风险，投资需谨慎。</p>
+    <p>生成时间: {{ generated_at }}</p>
+  </div>
+
+</div>
+
+<script>
+{% if asset_curve and asset_curve.dates %}
+(function() {
+  var assetChart = echarts.init(document.getElementById('asset-chart'));
+  var assetOption = {
+    tooltip: { trigger: 'axis', valueFormatter: function(v) { return v != null ? '¥' + v.toFixed(2) : '-'; } },
+    legend: { data: ['资产市值', '投入本金', '盈亏金额'], bottom: 0 },
+    grid: { left: '3%', right: '4%', bottom: '12%', top: '3%', containLabel: true },
+    xAxis: { type: 'category', data: {{ asset_curve.dates | tojson }} },
+    yAxis: {
+      type: 'value',
+      axisLabel: { formatter: function(v) { return v >= 10000 ? '¥' + (v/10000).toFixed(0) + '万' : '¥' + v; } }
+    },
+    series: [
+      {
+        name: '资产市值', type: 'line',
+        data: {{ asset_curve.vals | tojson }},
+        lineStyle: { color: '#d32f2f', width: 2 },
+        itemStyle: { color: '#d32f2f' },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: 'rgba(211,47,47,0.15)' },
+          { offset: 1, color: 'rgba(211,47,47,0.02)' }
+        ])}
+      },
+      {
+        name: '投入本金', type: 'line',
+        data: {{ asset_curve.principals | tojson }},
+        lineStyle: { color: '#1a73e8', width: 1.5, type: 'dashed' },
+        itemStyle: { color: '#1a73e8' }
+      },
+      {
+        name: '盈亏金额', type: 'line',
+        data: {{ asset_curve.profits | tojson }},
+        lineStyle: { color: '#4caf50', width: 1.5 },
+        itemStyle: { color: '#4caf50' }
+      }
+    ]
+  };
+  assetChart.setOption(assetOption);
+  window.addEventListener('resize', function() { assetChart.resize(); });
+})();
+{% endif %}
+
+{% if chart_data %}
+(function() {
+  var returnChart = echarts.init(document.getElementById('return-chart'));
+  var returnOption = {
+    tooltip: { trigger: 'axis', formatter: function(p) {
+      return p[0].axisValue + '<br/>' + p.map(function(s) {
+        return s.marker + ' ' + s.seriesName + ': ' + s.value.toFixed(2) + '%';
+      }).join('<br/>');
+    }},
+    legend: { data: ['定投累计收益', 'ETF买入持有'], bottom: 0 },
+    grid: { left: '3%', right: '4%', bottom: '12%', top: '3%', containLabel: true },
+    xAxis: { type: 'category', data: {{ chart_data.dates | tojson }} },
+    yAxis: { type: 'value', axisLabel: { formatter: '{value}%' } },
+    series: [
+      {
+        name: '定投累计收益', type: 'line',
+        data: {{ chart_data.fund_cum_return | tojson }},
+        lineStyle: { color: '#d32f2f', width: 2 },
+        itemStyle: { color: '#d32f2f' },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: 'rgba(211,47,47,0.2)' },
+          { offset: 1, color: 'rgba(211,47,47,0.02)' }
+        ])}
+      },
+      {
+        name: 'ETF买入持有', type: 'line',
+        data: {{ chart_data.benchmark_cum_return | tojson }},
+        lineStyle: { color: '#1a73e8', width: 1.5, type: 'dashed' },
+        itemStyle: { color: '#1a73e8' }
+      }
+    ]
+  };
+  returnChart.setOption(returnOption);
+  window.addEventListener('resize', function() { returnChart.resize(); });
+})();
+{% endif %}
+
+{% if scenario_data %}
+(function() {
+  var scenarioChart = echarts.init(document.getElementById('scenario-chart'));
+  var scenarioOption = {
+    tooltip: { trigger: 'axis', valueFormatter: function(v) { return v != null ? '¥' + v.toFixed(2) : '-'; } },
+    legend: { data: ['期末资产', '总收益'], bottom: 0 },
+    grid: { left: '3%', right: '4%', bottom: '12%', top: '3%', containLabel: true },
+    xAxis: { type: 'category', data: {{ scenario_data.scenarios | tojson }}, axisLabel: { formatter: '{value}%' } },
+    yAxis: { type: 'value', axisLabel: { formatter: '¥{value}' } },
+    series: [
+      { name: '期末资产', type: 'bar', data: {{ scenario_data.assets | tojson }}, itemStyle: { color: '#3949ab', borderRadius: [4, 4, 0, 0] }, label: { show: true, position: 'top', formatter: function(p) { return '¥' + (p.value/10000).toFixed(1) + '万'; } } },
+      { name: '总收益', type: 'bar', data: {{ scenario_data.returns | tojson }}, itemStyle: { color: '#66bb6a', borderRadius: [4, 4, 0, 0] } }
+    ]
+  };
+  scenarioChart.setOption(scenarioOption);
+  window.addEventListener('resize', function() { scenarioChart.resize(); });
+})();
+{% endif %}
+</script>
+</body>
+</html>
