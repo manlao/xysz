@@ -20,7 +20,7 @@ AmazingData MCP Server 是基于 Model Context Protocol (MCP) 协议开发的金
 
 ### 核心特性
 
-- **丰富的数据接口**: 提供 55 个工具接口，覆盖行情、财务、股东、交易等多维度数据
+- **丰富的数据接口**: 提供 57 个工具接口，覆盖行情、财务、股东、交易等多维度数据
 - **完整字段说明**: 所有接口返回数据的字段都有完整的中文说明，无省略
 - **自动认证**: 通过环境变量实现自动登录，无需手动管理会话
 - **统一数据格式**: 所有接口返回标准化的 JSON 格式数据
@@ -43,81 +43,61 @@ AmazingData MCP Server 是基于 Model Context Protocol (MCP) 协议开发的金
 
 - **
 - 
-- Python**: 3.8 - 3.13
+- Python**: 3.8 - 3.14
 - **操作系统**: Windows / Linux
 - **Python 环境**: Anaconda 推荐
-
-### 依赖包
-
-```bash
-# 核心依赖
-tgw=1.8.0.5
-AmazingData=1.0.24
-fastmcp=2.10.5
-pandas=2.3.0
-
-# PDF 文档读取
-PyPDF2=3.0.0
-```
 
 ---
 
 ## 安装配置
 
 ### 1. 安装依赖
-
-使用指定的 Anaconda 环境：
-
 ```bash
-D:\ProgramData\anaconda313\python.exe -m pip install fastmcp pandas PyPDF2
+# 核心依赖
+tgw>=1.0.9.2
+AmazingData>=1.1.9
+fastmcp>=4.0.3
+pandas>=2.0
+```
+```bash
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple fastmcp pandas
+pip install tgw-*.whl
+pip install AmazingData-*-cp3XX-*.whl
 ```
 
-### 2. 配置 Claude Desktop
+### 2. 配置星耀数智账号到 环境变量
 
-编辑配置文件 `%APPDATA%\Claude\claude_desktop_config.json`：
+用户名AD_USERNAME、密码AD_PASSWORD、ipAD_HOST、端口号AD_PORT，根据用户的输入配置到本地系统的环境变量
+### 3. 配置到 WorkBuddy
+
+
+脚本会写入 `~/.workbuddy/mcp.json`，随后在 WorkBuddy「连接器管理」中信任 `星耀数智` 即可。
+
+手动配置示例：
 
 ```json
 {
   "mcpServers": {
-    "amazingdata": {
-      "command": "D:\\ProgramData\\anaconda313\\python.exe",
-      "args": ["D:\\WealthManager\\WealthManager\\ad_mcp\\server.py"],
-      "env": {
-        "USER": "your_username",
-        "PASSWORD": "your_password",
-        "HOST": "***.***.***.***",
-        "PORT": "****"
-      }
+    "星耀数智": {
+      "type": "stdio",
+      "command": "C:\\Path\\To\\python.exe",
+      "args": ["D:\\WealthManager\\xysz\\WealthManager\\ad_mcp\\server.py"],
     }
   }
 }
 ```
+command需要改成本地的python环境
+写入 `~/.workbuddy/mcp.json`，随后在 WorkBuddy「连接器管理」中信任 `星耀数智` 即可。
 
 ---
 
-## 快速启动
-
-### 方式一：直接运行
-
-```bash
-cd D:\WealthManager\WealthManager\mcp_server
-D:\ProgramData\anaconda313\python.exe server.py
-```
-
-### 方式二：通过 Claude Desktop
-
-1. 配置好 `claude_desktop_config.json`
-2. 重启 Claude Desktop
-3. 在对话中直接使用 MCP 工具
 
 ### 验证安装
 
-启动后检查日志文件 `amazingdata_mcp.log`，确认：
+启动后检查日志文件 `logs/amazingdata_mcp.log`，确认：
 
 ```
-INFO - 正在登录 AmazingData...
-INFO - 登录成功！用户: your_username
-INFO - MCP Server 启动成功
+INFO - 自动登录成功，用户: your_username
 ```
 
 ---
@@ -126,13 +106,14 @@ INFO - MCP Server 启动成功
 
 ### 接口分类
 
-本服务提供 **55 个工具接口**，分为以下类别：
+本服务提供 **57 个工具接口**，分为以下类别：
 
-#### 1. 系统管理接口 (2个)
+#### 1. 系统管理接口 (3个)
 
 | 工具名称 | 功能说明 |
 |---------|---------|
 | `mcp_get_login_status` | 获取当前登录状态 |
+| `mcp_login` | 登录|
 | `mcp_logout` | 登出系统 |
 
 #### 2. 基础数据接口 (8个)
@@ -247,17 +228,18 @@ INFO - MCP Server 启动成功
 | `mcp_convertible_bond_redemption_notice` | 可转债赎回条款执行说明 |
 | `mcp_convertible_bond_suspension` | 可转债停复牌信息 |
 
-#### 13. 其他数据接口 (1个)
+#### 13. 其他数据接口 (2个)
 
 | 工具名称 | 功能说明 |
 |---------|---------|
 | `mcp_treasury_yield` | 国债收益率数据 |
+| `mcp_search_manual` | 按关键词检索开发手册，返回命中行号与上下文片段 |
 
 ### MCP Resources
 
 | 资源 URI | 说明 |
 |---------|------|
-| `amazingdata://doc/manual` | AmazingData 开发手册（PDF格式） |
+| `amazingdata://doc/manual` | 开发手册目录（正文用 `mcp_search_manual` 检索） |
 | `amazingdata://doc/api-summary` | API 接口摘要 |
 
 ---
@@ -453,8 +435,8 @@ result = await mcp_stock_basic(
 
 1. 检查环境变量是否正确设置
    ```bash
-   echo %AMAZINGDATA_USER%
-   echo %AMAZINGDATA_PASSWORD%
+   echo %AD_USERNAME%
+   echo %AD_PASSWORD%
    ```
 
 2. 验证服务器地址和端口
@@ -517,14 +499,15 @@ if begin_date > end_date:
     begin_date, end_date = end_date, begin_date
 ```
 
-### 问题 5: PDF 文档读取失败
+### 问题 5: 找不到手册中的接口说明
 
-**症状**: 访问 `amazingdata://doc/manual` 时提示 "PyPDF2 未安装"
+**症状**: 开发手册共 5000 余行，`amazingdata://doc/manual` 只返回目录
 
 **解决方案**:
 
-```bash
-D:\ProgramData\anaconda313\python.exe -m pip install PyPDF2
+```python
+# 用 mcp_search_manual 按关键词检索正文
+result = await mcp_search_manual(keyword="get_kline")
 ```
 
 ---
@@ -541,7 +524,7 @@ D:\ProgramData\anaconda313\python.exe -m pip install PyPDF2
 ┌─────────────────▼───────────────────────┐
 │         FastMCP Server (server.py)       │
 │  ┌─────────────────────────────────┐    │
-│  │  MCP Tools (55个工具接口)       │    │
+│  │  MCP Tools (57个工具接口)       │    │
 │  ├─────────────────────────────────┤    │
 │  │  MCP Resources (2个资源)        │    │
 │  ├─────────────────────────────────┤    │
@@ -630,17 +613,20 @@ def ensure_logged_in() -> bool:
 
 | 参数 | 说明 | 默认值 |
 |-----|------|--------|
-| `AMAZINGDATA_USER` | 用户名 | 必填 |
-| `AMAZINGDATA_PASSWORD` | 密码 | 必填 |
-| `AMAZINGDATA_HOST` | 服务器地址 | ***.***.***.*** |
-| `AMAZINGDATA_PORT` | 服务器端口 | **** |
-| `is_local` | 是否本地存储 | False（禁用） |
+| `AD_USERNAME` | 用户名 | 必填 |
+| `AD_PASSWORD` | 密码 | 必填 |
+| `AD_HOST` | 服务器地址 | 必填，无内置默认值 |
+| `AD_PORT` | 服务器端口 | 必填，无内置默认值 |
+| `AD_MCP_LOG_DIR` | 日志目录 | 脚本目录下 `logs` |
+| `AD_MCP_LOG_LEVEL` | 日志级别 | `INFO` |
 
 ### 日志配置
 
-日志文件: `amazingdata_mcp.log`
+日志文件: `logs/amazingdata_mcp.log`（可用 `AD_MCP_LOG_DIR` 指定目录）
 
-日志级别: INFO
+日志级别: INFO（可用 `AD_MCP_LOG_LEVEL` 调整）
+
+stdio 传输下 stdout 为协议通道，日志只输出到 stderr 与日志文件。
 
 日志格式: `%(asctime)s - %(name)s - %(levelname)s - %(message)s`
 

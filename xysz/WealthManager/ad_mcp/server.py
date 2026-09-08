@@ -12,29 +12,136 @@ AmazingData MCP Server
 """
 
 from fastmcp import FastMCP
+import asyncio
+import io
+import json as _json
 import os
 import sys
 import datetime
 import logging
+import tempfile
+from contextlib import asynccontextmanager
 from typing import Optional, List, Dict, Any
 from pathlib import Path
+
+
+def _is_jsonrpc(text: str) -> bool:
+    """仅识别真正的 MCP JSON-RPC 2.0 协议帧，其余一律视为第三方日志走 stderr。
+
+    此前用“以 { 开头即视为协议消息”的判断，会把 tgw 登录时 `print(logon_json)`
+    输出的整块 logon_json（合法 dict，以 { 开头、但无 jsonrpc 字段）误判为协议帧
+    写入 stdout，污染 stdio 协议通道，导致客户端 JSON-RPC 解析失败、MCP 无法连接。
+    修复：只有带 jsonrpc 字段的结构才放行，其它（含纯 JSON dict）全部进 stderr。
+    """
+    text = text.strip()
+    if not text.startswith('{'):
+        return False
+    try:
+        obj = _json.loads(text)
+    except Exception:
+        return False
+    # MCP 协议帧（FastMCP / mcp SDK 输出）必定带 "jsonrpc":"2.0" 字段
+    return isinstance(obj, dict) and obj.get('jsonrpc') == '2.0'
+
+
+class _SplitStdout(io.TextIOWrapper):
+    """MCP 协议消息写真实通道，第三方库的打印写 stderr"""
+
+    def write(self, s: str) -> int:
+        if _is_jsonrpc(s):
+            return super().write(s)
+        return sys.stderr.write(s)
+
+    def writelines(self, lines) -> None:
+        for line in lines:
+            self.write(line)
+
+
+def _divert_stdout():
+    """隔离 stdout
+
+    tgw / AmazingData 会向 stdout 打印日志，而 stdio 传输下 stdout 就是 JSON-RPC
+    协议通道：C 层输出通过把 fd 1 指向 stderr 拦截（Windows 需同步 STD_OUTPUT_HANDLE
+    否则底层仍用启动时的 handle 快照），Python 层输出通过 _SplitStdout 分流。
+    """
+    try:
+        protocol_fd = os.dup(1)
+        os.dup2(2, 1)
+        if os.name == 'nt':
+            import ctypes
+            kernel32 = ctypes.windll.kernel32
+            kernel32.SetStdHandle(-11, kernel32.GetStdHandle(-12))
+        stream = _SplitStdout(
+            io.BufferedWriter(io.FileIO(protocol_fd, 'w', closefd=True)),
+            encoding='utf-8', errors='replace', newline='\n', line_buffering=True,
+        )
+        sys.stdout = sys.__stdout__ = stream
+    except Exception as e:
+        os.write(2, f"[ad_mcp] stdout 隔离失败: {e!r}\n".encode())
+
+
+_divert_stdout()
 
 import pandas as pd
 import AmazingData as ad
 
-# 配置日志
+# stdio 传输下 stdout 是 JSON-RPC 协议通道，日志只能走 stderr
+def _resolve_log_dir() -> Path:
+    """解析日志目录：环境变量 > 脚本目录下 logs > 系统临时目录"""
+    candidates = []
+    env_dir = os.getenv('AD_MCP_LOG_DIR')
+    if env_dir:
+        candidates.append(Path(env_dir))
+    candidates.append(Path(__file__).parent / 'logs')
+    candidates.append(Path(tempfile.gettempdir()) / 'amazingdata_mcp')
+    for c in candidates:
+        try:
+            c.mkdir(parents=True, exist_ok=True)
+            return c
+        except Exception:
+            continue
+    return Path(tempfile.gettempdir())
+
+
+LOG_DIR = _resolve_log_dir()
+LOG_FILE = LOG_DIR / 'amazingdata_mcp.log'
+
+_handlers = [logging.StreamHandler(sys.stderr)]
+try:
+    _handlers.append(logging.FileHandler(LOG_FILE, encoding='utf-8'))
+except Exception:
+    pass
+
 logging.basicConfig(
-    level=logging.INFO,
+    level=os.getenv('AD_MCP_LOG_LEVEL', 'INFO').upper(),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('amazingdata_mcp.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=_handlers,
+    force=True
 )
 logger = logging.getLogger(__name__)
 
+
+@asynccontextmanager
+async def app_lifespan(server):
+    # 登录放在 lifespan：等 MCP 框架重定向标准流后再执行，避免底层库输出污染协议流
+    try:
+        result = await asyncio.wait_for(asyncio.to_thread(do_login), timeout=LOGIN_TIMEOUT)
+        if result.get('success'):
+            logger.info(f"自动登录成功，用户: {result['login_info']['username']}")
+        else:
+            logger.warning(f"自动登录失败：{result.get('message')}")
+            logger.warning("服务已启动但未登录，可调用 mcp_login 工具登录")
+    except asyncio.TimeoutError:
+        logger.warning(f"自动登录超时（{LOGIN_TIMEOUT}s），请检查服务器地址与网络")
+        logger.warning("服务已启动但未登录，可调用 mcp_login 工具登录")
+    except Exception as e:
+        logger.error(f"自动登录异常: {e}")
+        logger.warning("服务已启动但未登录，可调用 mcp_login 工具登录")
+    yield
+
+
 # 创建 FastMCP 实例
-mcp = FastMCP("AmazingData")
+mcp = FastMCP("星耀数智", lifespan=app_lifespan)
 
 # 文档路径
 DOC_PATH = Path(__file__).parent / "AmazingData开发手册.md"
@@ -164,6 +271,81 @@ def handle_error(e: Exception, context: str, **extra_info) -> dict:
     return error_response
 
 
+# ==================== 凭证读取 ====================
+# 不使用裸 USER/PASSWORD/HOST/PORT：Windows 上 USER 是系统登录名，易读到错误值
+LOGIN_TIMEOUT = 60
+
+# 四个变量全部必填
+_ENV_KEYS = {
+    'username': 'AD_USERNAME',
+    'password': 'AD_PASSWORD',
+    'host': 'AD_HOST',
+    'port': 'AD_PORT',
+}
+
+
+def get_credential(field: str) -> Optional[str]:
+    """读取单个凭证字段（进程环境变量）"""
+    return os.getenv(_ENV_KEYS[field])
+
+
+def load_credentials(override: Optional[Dict[str, Any]] = None) -> dict:
+    """加载登录凭证，override 用于运行时显式传入（mcp_login 工具）"""
+    override = override or {}
+    present = [k for k in _ENV_KEYS.values() if os.getenv(k)]
+    if present:
+        logger.info(f"凭证来源：环境变量（已设置 {'、'.join(present)}）")
+    else:
+        logger.warning("环境变量中未发现任何 AD_* 凭证，MCP 客户端需自行注入 env")
+    port_raw = override.get('port') or get_credential('port')
+    port = None
+    if port_raw:
+        try:
+            port = int(port_raw)
+        except (TypeError, ValueError):
+            logger.warning(f"AD_PORT 配置非法({port_raw})，不是整数")
+
+    return {
+        'username': override.get('username') or get_credential('username'),
+        'password': override.get('password') or get_credential('password'),
+        'host': override.get('host') or get_credential('host'),
+        'port': port,
+    }
+
+
+def do_login(override: Optional[Dict[str, Any]] = None) -> dict:
+    """执行登录，成功返回登录信息"""
+    global _is_logged_in, _login_info
+
+    cred = load_credentials(override)
+    missing = [k for k in ('username', 'password', 'host', 'port') if not cred.get(k)]
+    if missing:
+        return {
+            "success": False,
+            "message": "缺少登录凭证：" + "、".join(_ENV_KEYS[m] for m in missing)
+                       + "。请配置 AD_USERNAME / AD_PASSWORD / AD_HOST / AD_PORT 四个环境变量"
+                         "后重启 MCP 服务，或在 mcp_login 工具中直接传入对应参数"
+        }
+
+    success = ad.login(
+        username=cred['username'],
+        password=cred['password'],
+        host=cred['host'],
+        port=cred['port'],
+    )
+    if success:
+        _is_logged_in = True
+        _login_info = {
+            'username': cred['username'],
+            'host': cred['host'],
+            'port': cred['port'],
+            'login_time': datetime.datetime.now().isoformat(),
+        }
+        logger.info(f"登录成功：{cred['username']}@{cred['host']}:{cred['port']}")
+        return {"success": True, "message": "登录成功", "login_info": dict(_login_info)}
+    return {"success": False, "message": "登录失败，请检查账号密码或网络连通性"}
+
+
 def ensure_logged_in() -> bool:
     """确保已登录，如果未登录则抛出异常"""
     global _is_logged_in
@@ -210,25 +392,31 @@ def validate_date_range(begin_date: Optional[int], end_date: Optional[int]) -> t
 
 # ==================== MCP Resources ====================
 
-@mcp.resource("ad_api://doc/manual")
+@mcp.resource("amazingdata://doc/manual")
 async def get_manual() -> str:
     """
-    获取 AmazingData 开发手册
+    获取 AmazingData 开发手册目录
+
+    手册全文过大，这里只返回目录；具体章节内容用 mcp_search_manual 工具检索
 
     Returns:
-        开发手册的文本内容
+        开发手册目录
     """
     try:
-        if DOC_PATH.exists():
-            return DOC_PATH.read_text(encoding='utf-8')
-        else:
+        if not DOC_PATH.exists():
             return f"文档不存在: {DOC_PATH}"
+        lines = DOC_PATH.read_text(encoding='utf-8').splitlines()
+        end = next((i for i in range(1, len(lines))
+                    if lines[i].startswith('## ') and '目录' not in lines[i]), len(lines))
+        toc = "\n".join(lines[:end])
+        return f"{toc}\n\n（手册共 {len(lines)} 行，正文已省略，"
+        f"使用 mcp_search_manual 工具按关键词检索具体内容）"
     except Exception as e:
         logger.error(f"读取开发手册失败: {e}")
         return f"读取开发手册失败: {str(e)}"
 
 
-@mcp.resource("ad_api://doc/api-summary")
+@mcp.resource("amazingdata://doc/api-summary")
 async def get_api_summary() -> str:
     """
     获取 AmazingData API 接口摘要
@@ -238,7 +426,7 @@ async def get_api_summary() -> str:
     """
     return """# AmazingData MCP Server API 接口摘要
 
-本服务共提供 56 个 MCP 工具接口，精确对应如下：
+本服务共提供 57 个 MCP 工具接口，精确对应如下：
 
 ## 1. 系统管理接口 (2个)
 - mcp_get_login_status: 获取当前登录状态
@@ -3556,6 +3744,70 @@ async def mcp_convertible_bond_suspension(code_list: list[str], begin_date: int 
 # ============================================================================
 
 @mcp.tool()
+async def mcp_search_manual(keyword: str, max_chars: int = 6000) -> dict:
+    """
+    在开发手册中按关键词检索，返回命中位置及上下文片段
+
+    Args:
+        keyword: 关键词，如接口名 get_kline、字段名 security_type
+        max_chars: 返回结果的最大字符数，默认 6000
+
+    Returns:
+        命中数量与片段列表（含行号）
+    """
+    try:
+        if not DOC_PATH.exists():
+            return {"success": False, "message": f"文档不存在: {DOC_PATH}"}
+        lines = DOC_PATH.read_text(encoding='utf-8').splitlines()
+        hits = [i for i, line in enumerate(lines) if keyword in line]
+        if not hits:
+            return {"success": True, "count": 0, "message": f"未找到包含 “{keyword}” 的内容", "data": []}
+
+        snippets, total = [], 0
+        for i in hits:
+            if total >= max_chars:
+                break
+            seg = "\n".join(lines[max(0, i - 2):i + 6])
+            snippets.append({"line": i + 1, "text": seg})
+            total += len(seg)
+        return {"success": True, "count": len(hits), "data": snippets}
+    except Exception as e:
+        logger.error(f"检索开发手册失败: {e}")
+        return {"success": False, "message": f"检索失败: {str(e)}"}
+
+
+@mcp.tool()
+async def mcp_login(username: str = None, password: str = None,
+                    host: str = None, port: int = None) -> dict:
+    """
+    登录 AmazingData 服务
+
+    服务启动时会自动登录。若启动未登录（凭证缺失/网络异常），
+    可用本工具显式登录；不传参数时按环境变量凭证登录。
+
+    Args:
+        username: 用户名，不传则使用 AD_USERNAME
+        password: 密码，不传则使用 AD_PASSWORD
+        host: 服务器地址，不传则使用 AD_HOST
+        port: 服务器端口，不传则使用 AD_PORT
+
+    Returns:
+        登录结果
+    """
+    try:
+        override = {k: v for k, v in {
+            'username': username, 'password': password,
+            'host': host, 'port': port
+        }.items() if v}
+        return await asyncio.wait_for(asyncio.to_thread(do_login, override), timeout=LOGIN_TIMEOUT)
+    except asyncio.TimeoutError:
+        return {"success": False, "message": f"登录超时（{LOGIN_TIMEOUT}s），请检查服务器地址与网络"}
+    except Exception as e:
+        logger.error(f"登录失败: {e}")
+        return {"success": False, "message": f"登录失败: {str(e)}"}
+
+
+@mcp.tool()
 async def mcp_logout() -> dict:
     """
     登出 AmazingData
@@ -3594,32 +3846,6 @@ async def mcp_logout() -> dict:
 
 
 if __name__ == "__main__":
-    # 从环境变量或配置文件加载登录信息
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
-    host = os.getenv('HOST')
-    port = int(os.getenv('PORT'))
-
-    # 自动登录
-    try:
-        logger.info(f"启动 AmazingData MCP Server，尝试自动登录...")
-        success = ad.login(username=username, password=password, host=host, port=port)
-
-        if success:
-            _is_logged_in = True
-            _login_info = {
-                'username': username,
-                'host': host,
-                'port': port,
-                'login_time': datetime.datetime.now().isoformat()
-            }
-            logger.info("自动登录成功")
-        else:
-            logger.warning("自动登录失败，请手动调用 mcp_login 工具登录")
-    except Exception as e:
-        logger.error(f"自动登录异常: {e}")
-        logger.warning("将在未登录状态下启动服务，请手动调用 mcp_login 工具登录")
-
-    # 启动 MCP 服务
-    logger.info("启动 MCP 服务...")
+    # 自动登录在 app_lifespan 中执行
+    logger.info(f"启动 AmazingData MCP Server，日志文件: {LOG_FILE}")
     mcp.run(transport="stdio")
