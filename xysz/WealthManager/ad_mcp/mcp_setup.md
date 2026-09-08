@@ -81,12 +81,13 @@ pip install AmazingData-*-cp3XX-*.whl
     "星耀数智": {
       "type": "stdio",
       "command": "C:\\Path\\To\\python.exe",
-      "args": ["D:\\WealthManager\\xysz\\WealthManager\\ad_mcp\\server.py"],
+      "args": ["D:\\Path\\To\\server.py"],
     }
   }
 }
 ```
 command需要改成本地的python环境
+args需要改成本地的server.py, 从https://gitee.com/cgs2026/xysz/blob/master/xysz/WealthManager/ad_mcp下载的
 写入 `~/.workbuddy/mcp.json`，随后在 WorkBuddy「连接器管理」中信任 `星耀数智` 即可。
 
 ---
