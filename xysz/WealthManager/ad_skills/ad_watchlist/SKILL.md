@@ -1,6 +1,11 @@
 ---
 name: ad-watchlist
+display_name: 星耀数智自选股管理
+display_name_en: Xingyao Watchlist Manager
+version: 1.0.0
 description: 中国银河证券星耀数智自选股管理技能。可本地存储自选股及分组信息，支持多分组管理、自定义分组名称，支持单只 / 批量增减、个股检索，自动生成包含行情、基本面数据的展示页面。
+description_zh: 中国银河证券星耀数智自选股管理技能。可本地存储自选股及分组信息，支持多分组管理、自定义分组名称，支持单只 / 批量增减、个股检索，自动生成包含行情、基本面数据的展示页面。
+description_en: China Galaxy Securities Xingyao watchlist management skill. Store watchlists and groups locally in SQLite, manage multiple groups with custom names, add, remove or look up stocks individually or in batch, and auto-generate display pages with quotes and fundamental data.
 ---
 
 # 自选股管理 (ad-watchlist)

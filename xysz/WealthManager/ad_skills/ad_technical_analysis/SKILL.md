@@ -1,6 +1,11 @@
 ---
 name: ad-technical-analysis
+display_name: 星耀数智技术面指标
+display_name_en: Xingyao Technical Indicators
+version: 1.0.0
 description: 中国银河证券星耀数智A股技术面指标计算工具。当用户需要计算A股股票的技术指标时使用此技能。支持56个技术指标的计算，涵盖超买超卖、趋势、能量、成交量、均线、路径、其他共7大类。包括MACD、KDJ、RSI、布林线、均线系统、DMI、TRIX、SAR等。本技能仅提供技术指标的数值计算结果，不包含任何买卖信号或投资建议。即使用户没有明确提到"技术指标"，只要涉及A股技术指标计算、KDJ、RSI、MACD、布林带等技术分析场景，都应该使用此技能。
+description_zh: 中国银河证券星耀数智A股技术面指标计算工具。当用户需要计算A股股票的技术指标时使用此技能。支持56个技术指标的计算，涵盖超买超卖、趋势、能量、成交量、均线、路径、其他共7大类。包括MACD、KDJ、RSI、布林线、均线系统、DMI、TRIX、SAR等。本技能仅提供技术指标的数值计算结果，不包含任何买卖信号或投资建议。即使用户没有明确提到"技术指标"，只要涉及A股技术指标计算、KDJ、RSI、MACD、布林带等技术分析场景，都应该使用此技能。
+description_en: China Galaxy Securities Xingyao A-share technical indicator tool. Computes 56 technical indicators across 7 categories (overbought and oversold, trend, momentum, volume, moving averages, channels, others), including MACD, KDJ, RSI, Bollinger Bands, DMI, TRIX and SAR. Numeric results only, no trading signals or investment advice.
 ---
 
 # A股技术指标计算

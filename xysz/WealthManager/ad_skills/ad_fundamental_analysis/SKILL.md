@@ -1,6 +1,11 @@
 ---
 name: ad-fundamental-analysis
+display_name: 星耀数智基本面指标
+display_name_en: Xingyao Fundamental Indicators
+version: 1.0.0
 description: 中国银河证券星耀数智A股基本面指标计算工具。当用户需要进行A股基本面分析、财务指标计算、盈利能力/成长性/估值/安全性等指标分析时使用此技能。支持90个基本面指标的计算，涵盖盈利能力、成长指标、营运效率、盈余质量、安全性、公司治理、估值、股东、规模共9大类。即使用户没有明确提到"基本面指标"，只要涉及A股财务分析、指标计算、ROE/PE/PB等指标分析，都应该使用此技能。
+description_zh: 中国银河证券星耀数智A股基本面指标计算工具。当用户需要进行A股基本面分析、财务指标计算、盈利能力/成长性/估值/安全性等指标分析时使用此技能。支持90个基本面指标的计算，涵盖盈利能力、成长指标、营运效率、盈余质量、安全性、公司治理、估值、股东、规模共9大类。即使用户没有明确提到"基本面指标"，只要涉及A股财务分析、指标计算、ROE/PE/PB等指标分析，都应该使用此技能。
+description_en: China Galaxy Securities Xingyao A-share fundamental indicator tool. Computes 90 fundamental metrics across 9 categories (profitability, growth, operating efficiency, earnings quality, safety, governance, valuation, shareholders, size) for A-share fundamental analysis such as ROE, PE and PB.
 ---
 
 # A股基本面指标

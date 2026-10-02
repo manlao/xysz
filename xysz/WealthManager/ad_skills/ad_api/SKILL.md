@@ -1,6 +1,11 @@
 ---
 name: ad-api
+display_name: 星耀数智金融数据
+display_name_en: Xingyao Financial Data
+version: 1.0.0
 description: 中国银河证券星耀数智金融数据API技能。当用户需要获取中国证券市场数据（股票、债券、基金、期货、期权、港股通等）、查询财务报表、分析历史行情时使用此技能。支持历史数据查询、财务数据分析、股东数据查询等场景。只要涉及中国A股、港股通、期货期权等金融数据查询和分析，都应该使用此技能。
+description_zh: 中国银河证券星耀数智金融数据API技能。当用户需要获取中国证券市场数据（股票、债券、基金、期货、期权、港股通等）、查询财务报表、分析历史行情时使用此技能。支持历史数据查询、财务数据分析、股东数据查询等场景。只要涉及中国A股、港股通、期货期权等金融数据查询和分析，都应该使用此技能。
+description_en: China Galaxy Securities Xingyao financial data API skill. Fetch China securities market data (stocks, bonds, funds, futures, options, HK Stock Connect), query financial statements, and analyze historical quotes. Supports historical data queries, financial analysis and shareholder data for China A-shares, HK Stock Connect, futures and options.
 ---
 
 ## 概述

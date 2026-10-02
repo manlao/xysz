@@ -1,6 +1,11 @@
 ---
 name: ad-etf-dca
+display_name: 星耀数智ETF定投计算器
+display_name_en: Xingyao ETF DCA Calculator
+version: 1.0.0
 description: 中国银河证券星耀数智场内ETF定投计算器。支持正向测算、历史回测、目标反推（自定义每期投入金额、年化收益、投资期限）等多类 ETF 定投测算场景。
+description_zh: 中国银河证券星耀数智场内ETF定投计算器。支持正向测算、历史回测、目标反推（自定义每期投入金额、年化收益、投资期限）等多类 ETF 定投测算场景。
+description_en: China Galaxy Securities Xingyao on-exchange ETF dollar-cost averaging (DCA) calculator. Supports forward projection, historical backtest, and target-based reverse calculation (custom per-period amount, annualized return or investment horizon), with visual HTML reports.
 ---
 
 # ETF定投计算器 Skill

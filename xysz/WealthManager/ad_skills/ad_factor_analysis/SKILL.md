@@ -1,6 +1,11 @@
 ---
 name: ad-factor-analysis
+display_name: 星耀数智因子分析
+display_name_en: Xingyao Factor Analysis
+version: 1.0.0
 description: 中国银河证券星耀数智的因子分析框架。支持单因子分析（预处理+IC/回归/分层三大方法+拥挤度）和多因子合成（共线性检测+正交化+8种加权+打分），自动生成可视化HTML报告。涉及因子检验、因子有效性、因子合成、因子加权、因子正交化、因子打分、IC分析、分层回测、因子拥挤度、多因子选股、因子组合、因子共线性、因子降维等场景时使用。
+description_zh: 中国银河证券星耀数智的因子分析框架。支持单因子分析（预处理+IC/回归/分层三大方法+拥挤度）和多因子合成（共线性检测+正交化+8种加权+打分），自动生成可视化HTML报告。涉及因子检验、因子有效性、因子合成、因子加权、因子正交化、因子打分、IC分析、分层回测、因子拥挤度、多因子选股、因子组合、因子共线性、因子降维等场景时使用。
+description_en: China Galaxy Securities Xingyao factor analysis framework. Supports single-factor analysis (preprocessing plus IC, regression and layered backtest methods with crowding metrics) and multi-factor synthesis (collinearity detection, orthogonalization, 8 weighting schemes and scoring), with automatic visual HTML reports.
 ---
 
 # 因子分析 Skill

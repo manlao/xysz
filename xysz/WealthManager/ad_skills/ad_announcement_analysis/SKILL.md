@@ -1,6 +1,11 @@
 ---
 name: ad-announcement-analysis
+display_name: 公告搜索
+display_name_en: Announcement Search
+version: 1.0.0
 description: 中国银河证券星耀数智公告搜索技能。按分类筛选公告列表，下载PDF原文，转换为Markdown供AI阅读分析。支持股票/ETF/可转债三种标的类型。用户提出公告分析需求时，使用此skill。
+description_zh: 中国银河证券星耀数智公告搜索技能。按分类筛选公告列表，下载PDF原文，转换为Markdown供AI阅读分析。支持股票/ETF/可转债三种标的类型。用户提出公告分析需求时，使用此skill。
+description_en: China Galaxy Securities Xingyao announcement search skill. Filter announcement lists by category, download the original PDFs, and convert them to Markdown for AI reading and analysis. Supports stocks, ETFs and convertible bonds.
 ---
 
 # 公告搜索 Skill
