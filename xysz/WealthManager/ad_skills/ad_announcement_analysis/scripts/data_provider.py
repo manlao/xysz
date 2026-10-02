@@ -67,7 +67,7 @@ class DataProvider:
             )
 
         try:
-            ad.login(username=username, password=password, host=host, port=port)
+            ad.login(username=username, password=password, host=host, port=int(port))
         except SystemExit:
             raise ConnectionError(
                 "无法登录星耀数智，请检查账号密码和网络连接。\n"
