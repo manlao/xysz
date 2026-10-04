@@ -2,7 +2,7 @@
 """
 报告渲染模块 - 数据注入 + Jinja2 模板渲染
 
-读取 assets/templates/report_template.html 模板，
+读取 assets/report_template.html 模板，
 将计算结果注入模板变量，输出最终 HTML 文件。
 """
 
@@ -16,7 +16,7 @@ from jinja2 import Environment, FileSystemLoader
 
 _TEMPLATE_DIR = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
-    'assets', 'templates'
+    'assets'
 )
 
 

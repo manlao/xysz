@@ -107,6 +107,10 @@ fca.calc_all(window=60)
 
 调用 `scripts/run_analysis.py` 或直接使用 `report_renderer.py`：
 
+> **默认输出约定**：`output_path` 不指定时，报告输出到运行时工作目录下的
+> `output/factor_analysis/<名称>_report_<YYYYMMDD_HHMMSS>.html`（自动创建目录、带时间戳不覆盖历史），
+> 同时在同目录保存中间结果 CSV：`*_ic_series.csv`（IC 序列）、`*_factor_return.csv`（因子收益率）、`*_group_navs.csv`（分层净值）。
+
 ```python
 from scripts.report_renderer import FactorAnalysisReport
 

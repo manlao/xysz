@@ -55,7 +55,7 @@ AD_CACHE = os.path.join(_SKILL_DIR, "data", "ad_cache")
 # HTML 自动输出路径
 DEFAULT_HTML_PATH = os.path.join(os.getcwd(), "data", "watchlist.html")
 # HTML 展示页模板（CSS/JS/骨架，动态数据用占位符 __CSS_RULES__/__META__/__TABS__/__RADIOS__/__PANELS__ 填充）
-HTML_TEMPLATE_PATH = os.path.join(_SKILL_DIR, "assets", "templates", "watchlist_template.html")
+HTML_TEMPLATE_PATH = os.path.join(_SKILL_DIR, "assets", "watchlist_template.html")
 
 
 # ----------------------------------------------------------------------------
@@ -912,7 +912,7 @@ def generate_html(db, group_filter=None):
     for i in range(len(group_names)):
         radios_html.append('<input type="radio" name="gtab" id="gtab-%d" class="gtab"%s>' % (i, " checked" if i == default_idx else ""))
 
-    # ---- 从模板文件渲染 HTML（模板见 assets/templates/watchlist_template.html）----
+    # ---- 从模板文件渲染 HTML（模板见 assets/watchlist_template.html）----
     try:
         with open(HTML_TEMPLATE_PATH, "r", encoding="utf-8") as _tf:
             _tpl = _tf.read()

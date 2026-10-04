@@ -13,6 +13,7 @@
 
 import sys
 import os
+from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
@@ -67,6 +68,39 @@ def _rename_group_data(group_navs, group_metrics, turnover, group_keys):
     return renamed_navs, renamed_metrics, renamed_turnover, name_map
 
 
+def _prepare_output(output_path: Optional[str], default_name: str) -> str:
+    """
+    解析报告输出路径。
+
+    未指定时默认输出到 output/factor_analysis/<default_name>_report_<时间戳>.html
+    （相对于运行时工作目录），目录不存在则自动创建；避免重复运行相互覆盖。
+    """
+    if output_path is None:
+        out_dir = os.path.join('output', 'factor_analysis')
+        os.makedirs(out_dir, exist_ok=True)
+        ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+        output_path = os.path.join(out_dir, f'{default_name}_report_{ts}.html')
+    else:
+        out_dir = os.path.dirname(output_path)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
+    return output_path
+
+
+def _save_result_csv(df: pd.DataFrame, report_path: str, suffix: str) -> Optional[str]:
+    """将中间计算结果存为 CSV，与报告同目录，文件名 = 报告名_后缀。失败时静默跳过。"""
+    try:
+        if df is None or (hasattr(df, 'empty') and df.empty):
+            return None
+        out_dir = os.path.dirname(report_path) or '.'
+        stem = os.path.splitext(os.path.basename(report_path))[0]
+        path = os.path.join(out_dir, f'{stem}_{suffix}.csv')
+        df.to_csv(path, encoding='utf-8-sig')
+        return path
+    except Exception:
+        return None
+
+
 def run_factor_analysis(
     factor_raw: pd.DataFrame,
     factor_name: str,
@@ -92,8 +126,7 @@ def run_factor_analysis(
     :param factor_desc: 因子计算方法描述（用于因子定义区）
     :return: 报告文件路径
     """
-    if output_path is None:
-        output_path = f'{factor_name}_report.html'
+    output_path = _prepare_output(output_path, factor_name)
 
     # ============================================================
     # 1. 预处理
@@ -177,6 +210,15 @@ def run_factor_analysis(
 
     path = report.generate(output_path, open_browser=True)
     print(f"报告已生成: {path}")
+
+    # 中间结果落盘（与报告同目录）
+    for csv_path in (
+        _save_result_csv(ia.ic_df, path, 'ic_series'),
+        _save_result_csv(ra.factor_return, path, 'factor_return'),
+        _save_result_csv(renamed_navs, path, 'group_navs'),
+    ):
+        if csv_path:
+            print(f"中间结果已保存: {csv_path}")
 
     # 打印关键摘要
     print("\n" + "=" * 50)
@@ -369,8 +411,7 @@ def run_multi_factor_analysis(
     :param factor_descs: {因子名: 计算方法描述}，用于报告因子定义区
     :return: 报告文件路径
     """
-    if output_path is None:
-        output_path = 'multi_factor_report.html'
+    output_path = _prepare_output(output_path, f'multi_factor_{weight_method}')
 
     print("=" * 60)
     print(f"多因子合成分析")
@@ -560,6 +601,15 @@ def run_multi_factor_analysis(
 
     path = report.generate(output_path, open_browser=True)
     print(f"报告已生成: {path}")
+
+    # 中间结果落盘（与报告同目录）
+    for csv_path in (
+        _save_result_csv(ia.ic_df, path, 'ic_series'),
+        _save_result_csv(ra.factor_return, path, 'factor_return'),
+        _save_result_csv(renamed_navs2, path, 'group_navs'),
+    ):
+        if csv_path:
+            print(f"中间结果已保存: {csv_path}")
 
     # 打印关键摘要
     print("\n" + "=" * 60)
