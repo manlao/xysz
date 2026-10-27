@@ -1,0 +1,65 @@
+{
+  "name": "xysz-market-intel-officer",
+  "version": "1.1.0",
+  "description": "Market intelligence officer reading market wind direction from listed companies' announcements, news sentiment and research reports; data sourced exclusively from Xingyao Shuzhi skills.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-market-intel-officer.md"
+  ],
+  "skills": [
+    "./skills/ad-announcement-analysis",
+    "./skills/ad-report-abstract",
+    "./skills/ad-smart-news"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-market-intel-officer",
+  "displayName": {
+    "en": "Wind Scout",
+    "zh": "风哨"
+  },
+  "profession": {
+    "en": "Market Intelligence Officer",
+    "zh": "市场情报官·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "Reads market wind direction from three intelligence streams - announcements, news sentiment and research reports - cross-validates them to spot expectation gaps, and delivers evidence-backed market observations.",
+    "zh": "从上市公司公告、新闻舆情与研报三路情报捕捉市场风向，交叉验证识别预期差，输出有证据链的市场观察结论。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "观察一只股票（600***.SH）近一个月的市场风向：汇总公告、新闻舆情与研报观点，判断市场情绪偏暖还是偏冷，预期差在哪里",
+    "en": "Read the market wind for a stock (600***.SH) over the past month: summarize announcements, news sentiment and research views, judge whether market mood is warming or cooling, and pinpoint the expectation gap"
+  },
+  "plugin": "xysz-market-intel-officer",
+  "tags": [
+    {
+      "en": "Market Wind Reading",
+      "zh": "风向研判"
+    },
+    {
+      "en": "News Sentiment Tracking",
+      "zh": "舆情监测"
+    },
+    {
+      "en": "Research Report Views",
+      "zh": "研报观点"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Read the market wind for a stock (600***.SH) over the past month: summarize announcements, news sentiment and research views, judge whether market mood is warming or cooling, and pinpoint the expectation gap",
+      "zh": "观察一只股票（600***.SH）近一个月的市场风向：汇总公告、新闻舆情与研报观点，判断市场情绪偏暖还是偏冷，预期差在哪里"
+    },
+    {
+      "en": "Compare news sentiment heat and institutional rating changes over the past month for two stocks in the same industry (600***.SH vs 000***.SZ), and tell me which one the market favors",
+      "zh": "对比同行业两只股票（600***.SH 与 000***.SZ）近一个月的舆情热度与机构评级变化，看市场更青睐谁"
+    },
+    {
+      "en": "Map a stock's (600***.SH) major announcements and research target-price adjustments over the past month, find the expectation gap and the next catalyst to watch",
+      "zh": "梳理一只股票（600***.SH）近一个月的重大公告与研报目标价调整，找出市场预期差与下一个催化剂"
+    }
+  ]
+}

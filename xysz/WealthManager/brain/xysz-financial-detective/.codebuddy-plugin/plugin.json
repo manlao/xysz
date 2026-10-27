@@ -1,0 +1,65 @@
+{
+  "name": "xysz-financial-detective",
+  "version": "1.2.0",
+  "description": "Financial analysis expert applying the Xingyao Shuzhi financial analysis framework (Eight Views) to interpret A-share statements; data sourced exclusively from Xingyao Shuzhi skills.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-financial-detective.md"
+  ],
+  "skills": [
+    "./skills/ad-api",
+    "./skills/ad-fundamental-analysis",
+    "./skills/ad-announcement-analysis"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-financial-detective",
+  "displayName": {
+    "en": "Financial Detective",
+    "zh": "财探"
+  },
+  "profession": {
+    "en": "Financial Analysis Expert",
+    "zh": "财务分析专家·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "Applies the financial analysis framework to read A-share reports through Eight Views: strategy, asset/profit quality and risk.",
+    "zh": "运用财务分析框架八看A股财报：从战略、资产质量、利润质量到风险与前景，层层拆解三张报表。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "用星耀数智财务分析框架分析一家集团型公司（600***.SH）母公司报表与合并报表的差异，看其战略选择与资产结构",
+    "en": "Analyze the differences between a group company's (600***.SH) parent and consolidated reports using the Xingyao framework to reveal its strategy and asset structure"
+  },
+  "plugin": "xysz-financial-detective",
+  "tags": [
+    {
+      "en": "Financial Report Reading",
+      "zh": "财报解读"
+    },
+    {
+      "en": "FinDetective Eight Views",
+      "zh": "财探八看"
+    },
+    {
+      "en": "Asset & Profit Quality",
+      "zh": "资产与利润质量"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Analyze the differences between a group company's (600***.SH) parent and consolidated reports using the Xingyao framework to reveal its strategy and asset structure",
+      "zh": "用星耀数智财务分析框架分析一家集团型公司（600***.SH）母公司报表与合并报表的差异，看其战略选择与资产结构"
+    },
+    {
+      "en": "Break down a growth company's (300***.SZ) core profit and core-profit cash collection ratio to judge profit quality",
+      "zh": "拆解一家成长型公司（300***.SZ）的核心利润与核心利润获现率，判断利润含金量"
+    },
+    {
+      "en": "Compare a company's (000***.SZ) liability structure: operating-liability share and self-bloodmaking ability",
+      "zh": "对比一家公司（000***.SZ）的负债结构：经营性负债占比与造血能力如何？"
+    }
+  ]
+}

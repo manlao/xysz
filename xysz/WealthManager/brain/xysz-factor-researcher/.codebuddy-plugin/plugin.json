@@ -1,0 +1,68 @@
+{
+  "name": "xysz-factor-researcher",
+  "version": "1.2.0",
+  "description": "Quantitative factor researcher for A-shares: runs a complete workflow from data acquisition and factor construction (technical 56 + fundamental 90 indicators) through single-factor analysis (IC/regression/stratification/crowding), multi-factor synthesis (collinearity detection, orthogonalization, 8 weighting schemes, scoring) and screening, to cost-aware strategy backtesting and full performance evaluation with HTML reports. Data sourced exclusively from Xingyao Shuzhi skills.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-factor-researcher.md"
+  ],
+  "skills": [
+    "./skills/ad-api",
+    "./skills/ad-technical-analysis",
+    "./skills/ad-fundamental-analysis",
+    "./skills/ad-factor-analysis",
+    "./skills/ad-indicator-validation",
+    "./skills/ad-strategy-performance"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-factor-researcher",
+  "displayName": {
+    "en": "Quanter",
+    "zh": "宽客"
+  },
+  "profession": {
+    "en": "Quantitative Factor Researcher",
+    "zh": "量化因子研究员·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "Chains financial data, fundamental and technical indicator skills into a full factor research workflow: single-factor analysis, multi-factor synthesis and screening, strategy backtesting and performance evaluation.",
+    "zh": "联动金融数据、基本面、技术面与因子分析技能，覆盖单因子检验、多因子合成筛选与回测验证全流程。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "开发并验证一个多因子选股策略：用基本面与技术面因子构造候选池，完成单因子检验、IC_IR加权合成与筛选，对沪深300成分股回测，输出含夏普比率与最大回撤的完整业绩报告",
+    "en": "Develop and validate a multi-factor stock-selection strategy: build a candidate factor pool from fundamental and technical indicators, run single-factor tests, synthesize with IC_IR weighting and screening, backtest on CSI 300 constituents, and output a full performance report with Sharpe ratio and max drawdown"
+  },
+  "plugin": "xysz-factor-researcher",
+  "tags": [
+    {
+      "en": "Factor Research",
+      "zh": "因子研究"
+    },
+    {
+      "en": "Multi-Factor Selection",
+      "zh": "多因子选股"
+    },
+    {
+      "en": "Strategy Backtest",
+      "zh": "策略回测"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Develop and validate a multi-factor stock-selection strategy: build a candidate factor pool from fundamental and technical indicators, run single-factor tests, synthesize with IC_IR weighting and screening, backtest on CSI 300 constituents, and output a full performance report with Sharpe ratio and max drawdown",
+      "zh": "开发并验证一个多因子选股策略：用基本面与技术面因子构造候选池，完成单因子检验、IC_IR加权合成与筛选，对沪深300成分股回测，输出含夏普比率与最大回撤的完整业绩报告"
+    },
+    {
+      "en": "Test the momentum factor on CSI 300 constituents: IC analysis, stratified backtest and crowding diagnosis, and output a complete factor effectiveness report",
+      "zh": "检验动量因子在沪深300成分股上的有效性：IC分析、分组回测与拥挤度诊断，输出完整因子有效性报告"
+    },
+    {
+      "en": "Compare a dual moving-average crossover strategy versus a multi-factor selection strategy over the past three years: cost-inclusive net value, win rate, CAGR, max drawdown and full performance report",
+      "zh": "对比双均线交叉策略与多因子选股策略近三年的表现：含成本净值、胜率、CAGR、最大回撤与完整业绩报告"
+    }
+  ]
+}

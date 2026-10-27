@@ -1,0 +1,65 @@
+{
+  "name": "xysz-risk-officer",
+  "version": "1.2.0",
+  "description": "Chief Risk Officer hunting negative evidence and risk events in listed companies: regulatory, litigation, shareholder reduction, share unlock, and earnings miss risks; data sourced exclusively from Xingyao Shuzhi skills.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-risk-officer.md"
+  ],
+  "skills": [
+    "./skills/ad-api",
+    "./skills/ad-fundamental-analysis",
+    "./skills/ad-announcement-analysis"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-risk-officer",
+  "displayName": {
+    "en": "Risk Detective",
+    "zh": "风探"
+  },
+  "profession": {
+    "en": "Chief Risk Officer",
+    "zh": "首席风险官·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "Hunts negative evidence and risk events in listed companies: regulatory penalties, litigation, shareholder reduction, share unlock, and earnings misses.",
+    "zh": "专注上市公司风险排查，从公告与财报中挖掘反面证据，识别监管、诉讼、减持、解禁与业绩不及预期等风险。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "全面排查一家上市公司（600***.SH）的风险点：监管处罚、诉讼纠纷、股东减持、限售解禁、业绩不及预期，逐项给出反面证据",
+    "en": "Fully screen a listed company (600***.SH) for risks: regulatory penalties, litigation, shareholder reduction, share unlock, and earnings misses, with negative evidence for each item"
+  },
+  "plugin": "xysz-risk-officer",
+  "tags": [
+    {
+      "en": "Negative Evidence Hunting",
+      "zh": "反面证据挖掘"
+    },
+    {
+      "en": "Risk Event Screening",
+      "zh": "风险事件排查"
+    },
+    {
+      "en": "Announcement Reading",
+      "zh": "公告解读"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Fully screen a listed company (600***.SH) for risks: regulatory penalties, litigation, shareholder reduction, share unlock, and earnings misses, with negative evidence for each item",
+      "zh": "全面排查一家上市公司（600***.SH）的风险点：监管处罚、诉讼纠纷、股东减持、限售解禁、业绩不及预期，逐项给出反面证据"
+    },
+    {
+      "en": "Does this stock have any recent shareholder reduction, share unlock, or regulatory penalty announcements?",
+      "zh": "这只股票最近有没有股东减持、限售解禁或监管处罚的公告？"
+    },
+    {
+      "en": "Assess the risk that this company's next earnings report misses expectations",
+      "zh": "评估这家公司下期业绩不及预期的风险有多大"
+    }
+  ]
+}

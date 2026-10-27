@@ -1,0 +1,65 @@
+{
+  "name": "xysz-sim-trade",
+  "version": "1.2.0",
+  "description": "Simulated trading competition specialist from China Galaxy Securities (Xingyao). Builds competition portfolios tagged as contest entries, executes limit orders through the Xingyao simulated trading desk, monitors positions, orders and fills, and produces a competition performance review with net value curve and risk metrics.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-sim-trade.md"
+  ],
+  "skills": [
+    "./skills/ad-sim-trade",
+    "./skills/ad-strategy-performance",
+    "./skills/ad-api"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-sim-trade",
+  "displayName": {
+    "en": "The Gambit",
+    "zh": "弈者"
+  },
+  "profession": {
+    "en": "Simulated Trading Expert",
+    "zh": "模拟交易专家·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "Builds contest portfolios for the simulated trading competition, places limit orders, tracks positions and fills, and reviews the entry with a net value curve and a full risk breakdown.",
+    "zh": "为模拟交易大赛建立参赛组合，以限价委托下单并跟踪持仓、委托与成交，赛后出具净值曲线与风险绩效复盘报告"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "我要参加模拟交易大赛，帮我建一个参赛组合并拉出当前账户情况",
+    "en": "I am joining the simulated trading competition. Set up a contest portfolio for me and pull my current account status."
+  },
+  "plugin": "xysz-sim-trade",
+  "tags": [
+    {
+      "en": "Contest Portfolio",
+      "zh": "参赛组合管理"
+    },
+    {
+      "en": "Order Execution",
+      "zh": "限价委托执行"
+    },
+    {
+      "en": "Performance Review",
+      "zh": "绩效复盘"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "I am joining the simulated trading competition. Set up a contest portfolio for me and pull my current account status.",
+      "zh": "我要参加模拟交易大赛，帮我建一个参赛组合并拉出当前账户情况"
+    },
+    {
+      "en": "Buy 600***.SH with my competition account, around ¥100,000.",
+      "zh": "帮我用参赛账户买 600***.SH，投入 10 万左右"
+    },
+    {
+      "en": "Sell half of my 600***.SH in the competition account — first tell me how many shares are sellable and what the fees would be.",
+      "zh": "帮我把参赛账户里的 600***.SH 卖一半，先告诉我现在能卖多少、费用多少"
+    }
+  ]
+}

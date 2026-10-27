@@ -1,0 +1,24 @@
+{
+  "title": "连接星耀数智账号",
+  "description": "填写星耀数智的用户名和密码即可，服务器地址与端口已内置默认值，无需填写。\n首次连接会自动下载并安装运行环境（约 3~5 分钟），期间请耐心等待，不要重复点击连接；安装完成后即可正常使用。\n当前版本支持 Windows，macOS 暂不支持。\n还没有账号？点击下方「如何开通星耀数智账号？」查看开通指南。",
+  "docUrl": "https://mp.weixin.qq.com/s/ra0WQ6HbNhPPAalO5d6gcQ",
+  "docLabel": "如何开通星耀数智账号？",
+  "fields": [
+    {
+      "key": "AD_USERNAME",
+      "label": "用户名",
+      "type": "text",
+      "required": true,
+      "placeholder": "星耀数智用户名",
+      "description": "用于登录中国银河证券星耀数智平台的账号。"
+    },
+    {
+      "key": "AD_PASSWORD",
+      "label": "密码",
+      "type": "password",
+      "required": true,
+      "placeholder": "星耀数智登录密码，非资金账户密码",
+      "description": "首次连接需自动安装运行环境（约 3~5 分钟），请耐心等待，安装完成前请勿重复点击连接。您需妥善保管账号、密钥与运行环境，因您自身保管不当、第三方工具、网络攻击、设备故障等导致的风险与损失，由您自行负责。"
+    }
+  ]
+}

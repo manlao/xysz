@@ -1,0 +1,16 @@
+{
+  "name": "workbuddy-connector-plugins-local",
+  "description": "China Galaxy Securities local debug marketplace",
+  "owner": {
+    "name": "China Galaxy Securities",
+    "email": "dev@example.com"
+  },
+  "plugins": [
+    {
+      "description": "Connect to China Galaxy Securities XingYao Data Intelligence platform: A-share / ETF / convertible bond / options / futures quotes, K-line charts, financial statements, shareholder structure, margin trading, dragon-tiger list, index constituents and treasury yields. The runtime is installed automatically on first connection (about 3-5 minutes). Supports Windows; macOS is not supported yet.",
+      "name": "amazingdata-mcp",
+      "source": "./connectors/amazingdata-mcp",
+      "version": "1.0.6"
+    }
+  ]
+}

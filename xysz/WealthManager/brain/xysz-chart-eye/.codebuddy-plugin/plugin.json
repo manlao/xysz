@@ -1,0 +1,64 @@
+{
+  "name": "xysz-chart-eye",
+  "version": "1.1.0",
+  "description": "Veteran A-share technical analysis expert named ChartEye, powered by Xingyao Shuzhi 56 technical indicators and market data skills.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-chart-eye.md"
+  ],
+  "skills": [
+    "./skills/ad-api",
+    "./skills/ad-technical-analysis"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-chart-eye",
+  "displayName": {
+    "en": "ChartEye",
+    "zh": "盘眼"
+  },
+  "profession": {
+    "en": "Technical Analysis Expert",
+    "zh": "技术分析专家·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "A-share technical analyst: multi-timeframe trend, indicator resonance and volume-price checks to outline key support, resistance and trend status.",
+    "zh": "专注A股技术分析：多周期辨势、指标共振、量价验证，梳理关键支撑位、压力位与趋势状态，辅助研判盘面。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "用盘眼框架分析一家上市公司（600**.SH）的技术面：先辨趋势级别，再看MACD/KDJ/RSI是否共振，最后给出支撑压力位",
+    "en": "Analyze a listed company (600**.SH) technically with the ChartEye framework: trend levels first, then MACD/KDJ/RSI resonance, finally support and resistance"
+  },
+  "plugin": "xysz-chart-eye",
+  "tags": [
+    {
+      "en": "Technical Analysis",
+      "zh": "技术分析"
+    },
+    {
+      "en": "Indicator Resonance",
+      "zh": "指标共振"
+    },
+    {
+      "en": "Volume-Price & Divergence",
+      "zh": "量价与背离"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Analyze a listed company (600**.SH) technically with the ChartEye framework: trend levels first, then MACD/KDJ/RSI resonance, finally support and resistance",
+      "zh": "用盘眼框架分析一家上市公司（600**.SH）的技术面：先辨趋势级别，再看MACD/KDJ/RSI是否共振，最后给出支撑压力位"
+    },
+    {
+      "en": "Check whether a listed company (***) shows top or bottom divergence between price and MACD/KDJ",
+      "zh": "上市公司（***）当前价格与MACD、KDJ有没有顶背离或底背离？"
+    },
+    {
+      "en": "From the volume-price view, is the recent rally of a listed company (***) healthy volume or weak rally on thin volume?",
+      "zh": "从量价关系看，上市公司（***）近期这波上涨是放量健康还是缩量虚涨？"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+﻿图标上传对照表（全部取自 D://svg，不重复使用）
+
+== 已上传（无需处理）==
+工作模式-财富规划: view.svg
+家庭风险测评: align-vertical-justify-end.svg
+大类资产配置: barrel.svg
+ETF定投: biohazard.svg
+自选股关注池: captions.svg
+
+== 待上传 · 工作模式（3个）==
+深度分析: book-search.svg
+量化策略: globe-code.svg
+模拟交易: credit-card-reader.svg
+
+== 待上传 · 胶囊（15个）==
+组合再平衡: rotate-3d.svg
+财务分析: file-chart-pie.svg
+技术分析: mountain-snow.svg
+风险分析: monitor-stop.svg
+市场观点: file-headphone.svg
+个股全景体检: grid-3x2.svg
+单因子分析: square-split-vertical.svg
+多因子合成: squares-unite.svg
+多因子筛选: library-big.svg
+形态捕手: vector-polygon.svg
+条件筛选: rows-4.svg
+多指标策略回测: picture-in-picture-2.svg
+模拟委托-买入: pickaxe.svg
+模拟委托-卖出: image-minus.svg
+查模拟账户: layout-panel-left.svg
+撤单管理: clipboard-minus.svg
+查账户绩效: crown.svg
+
+== 专家/技能绑定（已按截图 oe_/os_ id 写入 JSON）==
+专家 id 已全部写入 expert.id（oe_ 前缀）；家庭风险测评保留原 ex_ 绑定。
+技能 id 已写入 mode.skills 与 capsule.skills（os_ 前缀）。
+⚠️ 导入后请抽查：若某胶囊的绑定专家/技能为空（平台不认 oe_/os_ 前缀或字段名），
+   按下表在表单手选——胶囊→专家：
+  财富规划: 家庭风险测评/大类资产配置/组合再平衡/自选股关注池→稳舵；ETF定投→长流
+  深度分析: 财务分析/个股全景体检→财探；技术分析→盘眼；风险分析→风探；市场观点→风哨
+  量化策略: 单因子分析/多因子合成/多因子筛选→宽客；形态捕手/条件筛选/多指标策略回测→试金
+  模拟交易: 全部5个→弈者
+财富规划: ETF定投 → 长流（家庭风险测评/大类资产配置/组合再平衡/自选股关注池 已绑稳舵）
+深度分析: 财务分析/个股全景体检 → 财探；技术分析 → 盘眼；风险分析 → 风探；市场观点 → 风哨
+量化策略: 单因子分析/多因子合成/多因子筛选 → 宽客；形态捕手/条件筛选/多指标策略回测 → 试金
+模拟交易: 全部5个 → 弈者

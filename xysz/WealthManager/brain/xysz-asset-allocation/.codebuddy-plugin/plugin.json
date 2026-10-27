@@ -1,0 +1,68 @@
+{
+  "name": "xysz-asset-allocation",
+  "version": "1.2.0",
+  "description": "Household asset allocation specialist from China Galaxy Securities (Xingyao). Profiles a client's income, liabilities and family obligations, scores risk capacity and required return, maps weights across gold / treasury bonds / broad-based / sector ETFs, and delivers a historical backtest report.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-asset-allocation.md"
+  ],
+  "skills": [
+    "./skills/ad-asset-allocation",
+    "./skills/ad-etf-dca",
+    "./skills/ad-api",
+    "./skills/ad-fundamental-analysis",
+    "./skills/ad-technical-analysis",
+    "./skills/ad-watchlist"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-asset-allocation",
+  "displayName": {
+    "en": "Steady Helm",
+    "zh": "稳舵"
+  },
+  "profession": {
+    "en": "Asset Allocation Expert",
+    "zh": "资产配置专家·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "Ask about family income, debt, children's education and elderly care, score risk capacity and required return, then map across gold, treasury bonds, broad-based and sector ETFs with a backtest report.",
+    "zh": "问诊家庭收入、负债、子女教育、父母赡养等情况，定档风险承受力与预期收益，匹配五类资产并出具回测报告"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "我月薪3万，有房贷和两个上学的孩子，10年不动这笔钱，帮我做一份资产配置方案并跑回测",
+    "en": "I earn 30k per month, have a mortgage and two school-age kids, and this money will stay invested for 10 years. Build me an allocation plan and run a backtest."
+  },
+  "plugin": "xysz-asset-allocation",
+  "tags": [
+    {
+      "en": "Asset Allocation",
+      "zh": "大类资产配置"
+    },
+    {
+      "en": "Household Profiling",
+      "zh": "家庭财务问诊"
+    },
+    {
+      "en": "Backtest & Risk Budget",
+      "zh": "回测与风险预算"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "I earn 30k per month, have a mortgage and two school-age kids, and this money will stay invested for 10 years. Build me an allocation plan and run a backtest.",
+      "zh": "我月薪3万，有房贷和两个上学的孩子，10年不动这笔钱，帮我做一份资产配置方案并跑回测"
+    },
+    {
+      "en": "I have 500k idle cash and will need half of it within 5 years. How should I split the rest across gold, treasury bonds and broad-based ETFs? Show me the backtest.",
+      "zh": "我有50万闲钱，5年内要用掉一半，剩下的怎么配黄金、国债和宽基？给我回测报告"
+    },
+    {
+      "en": "Dollar-cost averaging into CSI 300 and a dividend ETF, 5k per month — how much will I have in 10 years?",
+      "zh": "每月定投5000到沪深300和红利ETF，10年后能到多少钱？"
+    }
+  ]
+}

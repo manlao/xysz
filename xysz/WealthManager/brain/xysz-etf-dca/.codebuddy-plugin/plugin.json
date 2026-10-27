@@ -1,0 +1,64 @@
+{
+  "name": "xysz-etf-dca",
+  "version": "1.2.0",
+  "description": "ETF dollar-cost-averaging specialist from China Galaxy Securities (Xingyao). A senior ETF researcher who runs forward projections, historical backtests and three kinds of target reverse-solving on market-listed ETF DCA plans with real K-line data, field-accurate per-trade commissions and lot rounding, and delivers visualized HTML reports.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-etf-dca.md"
+  ],
+  "skills": [
+    "./skills/ad-etf-dca",
+    "./skills/ad-api"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-etf-dca",
+  "displayName": {
+    "en": "Everflow",
+    "zh": "长流"
+  },
+  "profession": {
+    "en": "ETF DCA Expert",
+    "zh": "ETF定投专家·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "A senior ETF researcher who computes your DCA plan with real market data: forward projection, historical backtest and target reverse-solving, with per-trade commissions and lot rules modeled as they are on the exchange, delivered as a visualized report.",
+    "zh": "资深ETF研究员，用真实行情算定投账：正向测算、历史回测、目标反推全模式，佣金按场内规则建模出报告"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "每月定投2000元到沪深300ETF，坚持10年，按年化8%算，到期末能有多少钱？",
+    "en": "I invest 2000 yuan per month into the CSI 300 ETF for 10 years. At an 8% annualized return, how much will I have at the end?"
+  },
+  "plugin": "xysz-etf-dca",
+  "tags": [
+    {
+      "en": "DCA Projection",
+      "zh": "定投测算"
+    },
+    {
+      "en": "Historical Backtest",
+      "zh": "历史回测"
+    },
+    {
+      "en": "Target Reverse-Solving",
+      "zh": "目标反推"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "I invest 2000 yuan per month into the CSI 300 ETF for 10 years. At an 8% annualized return, how much will I have at the end?",
+      "zh": "每月定投2000元到沪深300ETF，坚持10年，按年化8%算，到期末能有多少钱？"
+    },
+    {
+      "en": "From early 2020 to the end of 2024 I put 3000 yuan per month into the CSI 500 ETF. What did it really earn?",
+      "zh": "2020年初到2024年底，每月投3000元到中证500ETF，真实收益怎么样？"
+    },
+    {
+      "en": "I want to save 1 million yuan in 10 years but can only invest 5000 per month. What annualized return do I need, or how much longer would it take?",
+      "zh": "我想10年攒100万，每月只能投5000，需要多高的年化？还是得投更久？"
+    }
+  ]
+}

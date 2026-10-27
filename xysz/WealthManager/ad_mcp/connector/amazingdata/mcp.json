@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "amazingdata": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://gitee.com/cgs2026/xysz/releases/download/v1.0.0/amazingdata-mcp-launcher-1.0.6.tgz"
+      ],
+      "env": {
+        "AD_USERNAME": "${AD_USERNAME}",
+        "AD_PASSWORD": "${AD_PASSWORD}",
+        "AD_HOST": "101.230.159.235",
+        "AD_PORT": "8600",
+        "SystemDrive": "C:",
+        "SystemRoot": "C:\\Windows",
+        "PYTHONIOENCODING": "utf-8"
+      },
+      "timeout": 600000
+    }
+  }
+}

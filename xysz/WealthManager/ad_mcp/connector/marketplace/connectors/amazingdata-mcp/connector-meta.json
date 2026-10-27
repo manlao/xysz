@@ -1,0 +1,22 @@
+{
+  "name": "中国银河证券",
+  "name_en": "China Galaxy Securities",
+  "description": "Connect to China Galaxy Securities XingYao Data Intelligence platform: A-share / ETF / convertible bond / options / futures quotes, K-line charts, financial statements, shareholder structure, margin trading, dragon-tiger list, index constituents and treasury yields. The runtime is installed automatically on first connection (about 3-5 minutes). Supports Windows; macOS is not supported yet.",
+  "description_zh": "连接中国银河证券星耀数智平台，查询A股/ETF/可转债/期权/期货行情、K线、财务报表、股东结构、两融、龙虎榜、指数成分与国债收益率等数据。首次连接自动安装运行环境（约3~5分钟），安装期间请勿重复点击连接。当前版本支持 Windows，macOS 暂不支持。",
+  "description_en": "Connect to China Galaxy Securities XingYao Data Intelligence platform: A-share / ETF / convertible bond / options / futures quotes, K-line charts, financial statements, shareholder structure, margin trading, dragon-tiger list, index constituents and treasury yields. The runtime is installed automatically on first connection (about 3-5 minutes). Supports Windows; macOS is not supported yet.",
+  "source": "amazingdata-mcp",
+  "type": "mcp",
+  "version": "1.0.6",
+  "examples_zh": [
+    "查询中国银河最近60天的日K线",
+    "查一下中国银河的最新快照行情",
+    "拉取中国银河2025年报的利润表"
+  ],
+  "examples_en": [
+    "Query the daily K-line of China Galaxy Securities (601881.SH) for the last 60 days",
+    "Get the latest snapshot quote of China Galaxy Securities",
+    "Fetch the 2025 annual income statement of China Galaxy Securities"
+  ],
+  "auth_mode": "token",
+  "minWorkbuddyVersion": "4.24.0"
+}

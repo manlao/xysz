@@ -1,0 +1,68 @@
+{
+  "name": "xysz-indicator-backtest",
+  "version": "1.2.0",
+  "description": "Multi-indicator strategy backtest expert for A-shares: builds indicator panels from Xingyao technical and fundamental skills, converts indicators into per-stock signals, synthesizes them into portfolios, runs cost-aware matched backtests producing dual net values, and generates full performance reports. Data sourced exclusively from Xingyao Shuzhi skills.",
+  "author": {
+    "name": "China Galaxy Securities"
+  },
+  "agents": [
+    "./agents/xysz-indicator-backtest.md"
+  ],
+  "skills": [
+    "./skills/ad-indicator-validation",
+    "./skills/ad-technical-analysis",
+    "./skills/ad-fundamental-analysis",
+    "./skills/ad-strategy-performance",
+    "./skills/ad-pattern-hunter",
+    "./skills/ad-api"
+  ],
+  "expertType": "agent",
+  "agentName": "xysz-indicator-backtest",
+  "displayName": {
+    "en": "Touchstone",
+    "zh": "试金"
+  },
+  "profession": {
+    "en": "Indicator Backtest Expert",
+    "zh": "指标回测专家·中国银河证券"
+  },
+  "displayDescription": {
+    "en": "Generates trading signals from technical and fundamental indicators, runs portfolio synthesis and matched backtests to produce dual net values, and outputs a full performance evaluation report.",
+    "zh": "联动技术面与基本面指标生成交易信号，经组合合成与撮合回测产出双净值，输出完整业绩评估报告。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "用 MACD 和 RSI 对沪深300成分股做回测：多数指标看多才买、多数看空就卖，佣金印花税全算上，看这套打法到底赚不赚钱",
+    "en": "Backtest MACD and RSI signals on CSI 300 constituents: buy when most indicators turn bullish and sell when most turn bearish, with commission and stamp tax fully included, to see whether this approach actually makes money"
+  },
+  "plugin": "xysz-indicator-backtest",
+  "tags": [
+    {
+      "en": "Multi-Indicator Backtest",
+      "zh": "多指标回测"
+    },
+    {
+      "en": "Strategy Validation",
+      "zh": "策略验证"
+    },
+    {
+      "en": "Portfolio Performance",
+      "zh": "组合绩效"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Backtest MACD and RSI signals on CSI 300 constituents: buy when most indicators turn bullish and sell when most turn bearish, with commission and stamp tax fully included, to see whether this approach actually makes money",
+      "zh": "用 MACD 和 RSI 对沪深300成分股做回测：多数指标看多才买、多数看空就卖，佣金印花税全算上，看这套打法到底赚不赚钱"
+    },
+    {
+      "en": "Were a stock's (600***.SH) MACD golden-cross signals accurate over the past two years? Mark every buy and sell point on the candlestick chart and review each trade's profit and loss",
+      "zh": "一只股票（600***.SH）的 MACD 金叉信号近两年准不准？把每次买卖点标在K线上，逐笔看盈亏"
+    },
+    {
+      "en": "Backtest a monthly strategy that buys the top 20 stocks by 20-day gain with equal weights: how much do trading costs eat into returns, and what is the max drawdown",
+      "zh": "每月末按近20日涨幅挑前20只股票等权买入，回测含手续费和不含手续费收益差多少、最大回撤多大"
+    }
+  ]
+}

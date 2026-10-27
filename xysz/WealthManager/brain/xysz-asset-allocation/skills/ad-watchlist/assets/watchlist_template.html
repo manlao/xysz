@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自选股看板</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f0f4f8 0%,#e8edf5 100%);min-height:100vh;color:#1e293b;font-size:13px;}
+/* ── 顶栏 ── */
+.header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#1e4170 100%);padding:18px 24px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 2px 12px rgba(15,23,42,.25);}
+.header h1{font-size:20px;color:#fff;font-weight:700;letter-spacing:-.5px;display:flex;align-items:center;gap:8px;}
+.header h1:before{content:"";display:inline-block;width:4px;height:20px;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:2px;}
+.header .header-meta{color:#94a3b8;font-size:12px;}
+/* ── 主体 ── */
+.main{padding:20px 24px;max-width:100%;}
+/* ── 信息卡 ── */
+.stats-bar{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+.stat-card{background:#fff;border-radius:10px;padding:10px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:8px;font-size:13px;color:#64748b;}
+.stat-card b{color:#1e293b;font-size:16px;}
+/* ── 标签页 ── */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.tab{background:#fff;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;padding:6px 16px;font-size:13px;cursor:pointer;transition:all .15s;font-weight:500;}
+.tab:hover{color:#3b82f6;border-color:#bfdbfe;background:#f8faff;}
+.gtab{position:absolute;width:0;height:0;opacity:0;overflow:hidden;pointer-events:none;}
+.panel{display:none;}
+__CSS_RULES__
+/* ── 工具栏 ── */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.search-box{position:relative;flex:1;min-width:200px;max-width:400px;}
+.search-box input{width:100%;padding:8px 12px 8px 34px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;transition:border .15s;color:#1e293b;}
+.search-box input:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1);}
+.search-box:before{content:"\1F50D";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:#94a3b8;pointer-events:none;}
+.info-text{color:#64748b;font-size:12px;white-space:nowrap;}
+.page-size{font-size:13px;color:#475569;}
+.page-size select{padding:7px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;color:#475569;cursor:pointer;margin-left:4px;}
+/* ── 分页器 ── */
+.pager{display:flex;gap:4px;}
+.pager button{padding:6px 12px;border:1px solid #e2e8f0;background:#fff;border-radius:7px;cursor:pointer;font-size:12px;color:#475569;transition:all .15s;}
+.pager button:hover:not(:disabled){background:#eff6ff;border-color:#bfdbfe;color:#2563eb;}
+.pager button:disabled{opacity:.4;cursor:default;}
+.pager .page-info{display:flex;align-items:center;padding:0 4px;font-size:12px;color:#64748b;}
+/* ── 表格 ── */
+.tbl-wrap{overflow-x:auto;background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:14px;}
+table{border-collapse:collapse;width:100%;font-size:13px;}
+thead th{background:#f8fafc;color:#475569;font-weight:600;text-align:right;padding:9px 10px;border-bottom:2px solid #e2e8f0;cursor:pointer;user-select:none;transition:color .15s;position:sticky;top:0;z-index:1;}
+thead th:hover{color:#2563eb;}
+thead th:first-child,tbody td:first-child{text-align:left;}
+th.sorted{color:#2563eb;}
+th.sorted:after{content:" \25B2";font-size:9px;margin-left:2px;}
+th.sorted.desc:after{content:" \25BC";}
+tbody td{padding:7px 10px;border-bottom:1px solid #f1f5f9;white-space:nowrap;color:#334155;}
+tbody tr{transition:background .1s;}
+tbody tr:hover{background:#f8faff;}
+/* 涨红跌绿（A股惯例） */
+td.up{color:#dc2626;font-weight:500;}
+td.down{color:#16a34a;font-weight:500;}
+/* 序号列 */
+td.idx-col{color:#94a3b8;text-align:center;width:36px;font-size:12px;}
+/* 代码列加粗 */
+td.code-col{font-weight:600;font-family:"SF Mono","Consolas","Microsoft YaHei",monospace;font-size:12px;color:#2563eb;}
+/* 名称列 */
+td.name-col{font-weight:500;}
+/* ── 滚动条 ── */
+.tbl-wrap::-webkit-scrollbar{height:6px;}
+.tbl-wrap::-webkit-scrollbar-track{background:#f1f5f9;border-radius:3px;}
+.tbl-wrap::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+.tbl-wrap::-webkit-scrollbar-thumb:hover{background:#94a3b8;}
+/* ── 响应式 ── */
+@media (max-width:768px){
+  .header{padding:14px 16px;}
+  .main{padding:12px 10px;}
+  .toolbar{flex-direction:column;align-items:stretch;}
+  .search-box{max-width:none;}
+}
+</style></head><body>
+<div class="header">
+  <div><h1>自选股看板</h1></div>
+  <div class="header-meta">__META__</div>
+</div>
+<div class="main">
+<div class="tabs">__TABS__</div>
+<div class="toolbar">
+  <div class="search-box"><input id="q" placeholder="搜索代码 / 名称 / 自选原因..."></div>
+  <span id="info" class="info-text"></span>
+  <label class="page-size">每页<select id="ps"><option value="20">20</option><option value="50" selected>50</option><option value="100">100</option><option value="all">全部</option></select></label>
+  <span id="pager" class="pager"></span>
+</div>
+__RADIOS__
+__PANELS__
+</div>
+<script>
+(function(){
+  var panels=[].slice.call(document.querySelectorAll('.panel'));
+  panels.forEach(function(panel){
+    var tb=panel.querySelector('tbody'); if(!tb) return;
+    panel._rows=[].slice.call(tb.rows);
+  });
+  var state={q:'',sortKey:{},sortDir:{},page:{},pageSize:50};
+  function activePanel(){
+    var r=document.querySelector('input[name=gtab]:checked');
+    if(!r) return null;
+    return document.querySelector('.panel-'+r.id.split('-')[1]);
+  }
+  function renderActive(){
+    var panel=activePanel(); if(!panel||!panel._rows) return;
+    var m=panel.className.match(/panel-(\w+)/); if(!m) return; var gi=m[1];
+    var rows=panel._rows;
+    if(state.q){var q=state.q.toLowerCase();rows=rows.filter(function(tr){return tr.textContent.toLowerCase().indexOf(q)>=0;});}
+    var sk=state.sortKey[gi], sd=state.sortDir[gi]||1;
+    if(sk!=null){
+      rows=rows.slice().sort(function(a,b){
+        var xa=a.children[sk].getAttribute('data-v'), xb=b.children[sk].getAttribute('data-v');
+        var na=xa===''?null:parseFloat(xa), nb=xb===''?null:parseFloat(xb);
+        var an=isNaN(na), bn=isNaN(nb);
+        if(na===null&&nb===null)return 0; if(na===null)return 1; if(nb===null)return -1;
+        if(an&&bn) return xa.localeCompare(xb)*sd;
+        if(an) return 1; if(bn) return -1;
+        return (na-nb)*sd;
+      });
+    }
+    var ps=state.pageSize; var total=rows.length;
+    var pages=(ps==='all')?1:Math.max(1,Math.ceil(total/ps));
+    var page=Math.min(state.page[gi]||1,pages);
+    var start=(ps==='all')?0:(page-1)*ps; var end=(ps==='all')?total:Math.min(total,start+ps);
+    var shown=rows.slice(start,end);
+    var tb=panel.querySelector('tbody');
+    shown.forEach(function(tr){ tb.appendChild(tr); });
+    var shownSet=new Set(shown);
+    panel._rows.forEach(function(tr){ tr.style.display = shownSet.has(tr) ? '' : 'none'; });
+    var info=document.getElementById('info');
+    if(ps==='all'){
+      info.textContent='共 '+total+' 只（全部展示）';
+    }else{
+      info.textContent='共 '+total+' 只（第 '+page+'/'+pages+' 页）';
+    }
+    var pager=document.getElementById('pager'); pager.innerHTML='';
+    if(ps!=='all'){
+      var prev=document.createElement('button');prev.textContent='上一页';prev.disabled=page<=1;
+      prev.onclick=function(){state.page[gi]=page-1;renderActive();};
+      var next=document.createElement('button');next.textContent='下一页';next.disabled=page>=pages;
+      next.onclick=function(){state.page[gi]=page+1;renderActive();};
+      var pi=document.createElement('span'); pi.className='page-info'; pi.textContent=page+'/'+pages;
+      pager.appendChild(prev);pager.appendChild(pi);pager.appendChild(next);
+    }
+  }
+  document.querySelectorAll('table.gtable th').forEach(function(th){
+    var panel=th.closest('.panel'); var m=panel.className.match(/panel-(\w+)/); var gi=m?m[1]:'0';
+    var idx=Array.prototype.indexOf.call(th.parentNode.children,th);
+    th.addEventListener('click',function(){
+      if(state.sortKey[gi]===idx){state.sortDir[gi]=(state.sortDir[gi]||1)*-1;}else{state.sortKey[gi]=idx;state.sortDir[gi]=1;}
+      Array.prototype.forEach.call(th.parentNode.children,function(c){c.classList.remove('sorted');c.classList.remove('desc');});
+      th.classList.add('sorted'); if(state.sortDir[gi]<0)th.classList.add('desc');
+      renderActive();
+    });
+  });
+  document.getElementById('q').addEventListener('input',function(){state.q=this.value;state.page={};renderActive();});
+  document.getElementById('ps').addEventListener('change',function(){state.pageSize=this.value==='all'?'all':parseInt(this.value,10);state.page={};renderActive();});
+  document.querySelectorAll('input[name=gtab]').forEach(function(r){r.addEventListener('change',function(){state.page={};renderActive();});});
+  renderActive();
+})();
+</script>
+</body></html>
